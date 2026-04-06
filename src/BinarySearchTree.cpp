@@ -103,6 +103,13 @@ Node* BinarySearchTree::insert_(Node* node, int value) {
     //   - If value == node->data: do nothing (duplicate)
     //   - Return node (so the parent can reattach its child pointer)
 
+    if (!node) return new Node(value);
+
+    if (value < node->data)
+        node->left = insert_(node->left, value);
+    if (value > node->data)
+        node->right = insert_(node->right, value);
+
     return node;
 }
 
@@ -141,7 +148,13 @@ bool BinarySearchTree::search_(Node* node, int value) const {
     //   - If value < node->data, recurse left and return the result
     //   - Otherwise, recurse right and return the result
 
-    return false;
+    if (!node) return false;
+
+    if (value == node->data) return true;
+
+    if (value < node->data) return search_(node->left, value);
+
+    return search_(node->right, value);
 }
 
 // =============================================================================
@@ -177,6 +190,11 @@ void BinarySearchTree::inorder_(Node* node) const {
     //   - Print node->data followed by a space
     //   - Recurse on node->right
 
+    if (!node) return;
+
+    inorder_(node->left);
+    std::cout << node->data << " ";
+    inorder_(node->right);
 }
 
 // ---------------------------------------------------------------------------
@@ -202,6 +220,14 @@ void BinarySearchTree::preorder_(Node* node) const {
     //   - Recurse on node->left
     //   - Recurse on node->right
 
+    if (!node) return;
+
+    std::cout << node->data << " ";
+
+    preorder_(node->left);
+
+    preorder_(node->right);
+
 }
 
 // ---------------------------------------------------------------------------
@@ -226,6 +252,13 @@ void BinarySearchTree::postorder_(Node* node) const {
     //   - Recurse on node->right
     //   - Print node->data followed by a space
 
+    if (!node) return;
+
+    postorder_(node->left);
+
+    postorder_(node->right);
+
+    std::cout << node->data << " ";
 }
 
 // =============================================================================
@@ -263,7 +296,9 @@ int BinarySearchTree::height_(Node* node) const {
     //   - Return 1 + max(left_height, right_height)
     //     (the +1 counts the edge from this node to its tallest child)
 
-    return -1;
+    if (!node) return -1;
+
+    return 1 + std::max(height_(node->left), height_(node->right));
 }
 
 // =============================================================================
